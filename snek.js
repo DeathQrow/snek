@@ -75,7 +75,6 @@ function Clock() {
   document.getElementById('clock').innerHTML =  h + ":" + m + ":" + s;
   setTimeout(Clock, 1000);
 }
-
 function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
@@ -102,22 +101,22 @@ if (event.defaultPrevented) {
 
 switch (event.key) {
   case "ArrowDown":
-    if(Dir[0][1]!=-1){
+    if(Math.abs(Dir[0][1])!=1){
       Dir.push([0,1]);
     }
     break;
   case "ArrowUp":
-    if(Dir[0][1]!=1){
+    if(Math.abs(Dir[0][1])!=1){
       Dir.push([0,-1]);
     }
     break;
   case "ArrowLeft":
-    if(Dir[0][0]!=1){
+    if(Math.abs(Dir[0][0])!=1){
       Dir.push([-1,0]);
     }
     break;
   case "ArrowRight":
-    if(Dir[0][0]!=-1){
+    if(Math.abs(Dir[0][0])!=1){
       Dir.push([1,0]);
     }
     break;
@@ -129,7 +128,6 @@ switch (event.key) {
   default:
     return; // Quit when this doesn't handle the key event.
 }
-
 // Cancel the default action to avoid it being handled twice
 event.preventDefault();
 }, true);

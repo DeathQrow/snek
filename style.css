@@ -1,0 +1,7 @@
+body {
+  font-family: 'Patrick Hand SC';font-size: 22px;
+  background-color:rgb(47, 43, 77);
+}
+#myCanvas {
+  border: 5px solid #d3d3d3;
+}

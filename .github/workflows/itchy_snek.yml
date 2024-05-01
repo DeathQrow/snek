@@ -13,5 +13,5 @@ jobs:
           butlerApiKey: ${{secrets.BUTLER_API_KEY}}
           gameData: .
           itchUsername: deathqrow
-          itchGameId: snek
+          itchGameId: snek-rpg
           buildChannel: html

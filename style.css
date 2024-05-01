@@ -1,7 +1,38 @@
 body {
   font-family: 'Patrick Hand SC';font-size: 22px;
   background-color:rgb(47, 43, 77);
+  margin: 0;
+  padding: 0;
+}
+.top{
+  background-color: rgb(160, 221, 99);
+  width: 100%;
+  height: 48px;
+  overflow: auto;
+}
+.top div{
+  height: auto;
+  float: left;
+  font-size: 25pt;
+  text-align: center;
+}
+#title{
+  width: 50%;
+  font-weight:bolder;
+}
+#clock{
+  width: 25%;
+}
+#points{
+  width: 25%;
+}
+#canvasContainer{
+  width: 100%;
+  text-align: center;
 }
 #myCanvas {
   border: 5px solid #d3d3d3;
+  display: inline;
+  background-color: rgb(50,50,60);
+  background: repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 50% / 40px 40px;
 }

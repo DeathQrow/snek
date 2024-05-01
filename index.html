@@ -8,11 +8,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body onload="preGame(), Clock()">
-  <h2 id="title">Snake RPG >:3</h2>
-  <div id="clock"></div>
-  <div id="points">Points: 0</div>
-  <button id="resetButton" onclick="preGame()" hidden="true">Reset</button><br>
-  <canvas id="myCanvas">Your browser does not support the HTML canvas tag.</canvas>
+  <div class="top">
+    <div id="clock"></div>
+    <div id="title">Snake RPG >:3</div>
+    <div id="points">Score: 0</div>
+  </div><br>
+  <div id="canvasContainer"><canvas id="myCanvas">Your browser does not support the HTML canvas tag.</canvas></div>
   <script src="snek.js"></script>
 </body>
 </html>

@@ -9,15 +9,13 @@ c.height = h*size;
 
 //innitial game set up
 function preGame(){
-  document.getElementById("resetButton").hidden = true;
   ctx.fillStyle = "rgb(50,50,60)";
-  ctx.fillRect(0,0,c.width,c.height);
-  ctx.font = "30px 'Patrick Hand SC'";
-  ctx.fillStyle = "rgb(50,50,60)";
-  ctx.fillText("Hello World",10,50);
+  ctx.font = ((w*h)/(w+h)*5)+"px 'Patrick Hand SC'";
+  ctx.clearRect(0,0,w*size,h*size);
   Dir = [[1,0]];
-  Points = 0;
-  document.getElementById("points").innerText = "Points: " + Points;
+  Score = 0;
+  state = 1;
+  document.getElementById("points").innerText = "Score: " + Score;
   snake = [[1,3]];
   Apples = [];
   tail = [];
@@ -41,8 +39,8 @@ function startGame() {
   snake[0][1]+=Dir[0][1];
   if (Apples.find(ap => ap[0] == snake[0][0] && ap[1] == snake[0][1]) != undefined){
     Apples.splice(Apples.findIndex(ap => ap[0] == snake[0][0] && ap[1] == snake[0][1]),1);
-    Points++;
-    document.getElementById("points").innerText = "Points: " + Points;
+    Score++;
+    document.getElementById("points").innerText = "Score: " + Score;
     snake.push(tail);
     Apple();
   } else cleanUp();
@@ -52,9 +50,15 @@ function startGame() {
   ctx.fillStyle = "rgb(120,200,50)";
   }
   if(snake[0][0]<0||snake[0][0]>=w||snake[0][1]<0||snake[0][1]>=h||snake.slice(1).find(part => part[0] == snake[0][0] && part[1] == snake[0][1]) != undefined){
-    ctx.fillStyle = "red";
-    ctx.fillText("game over",150,180);
-    document.getElementById("resetButton").hidden = false;
+    ctx.fillStyle = "rgb(60,150,90)";
+    ctx.fillRect(snake[0][0]*size, snake[0][1]*size, size, size);
+    ctx.fillStyle = "rgba(50, 50, 50, 69%)";
+    ctx.fillRect(0,0,w*size,h*size);
+    ctx.fillStyle = "darkred";
+    ctx.fillText("Game Over",w*10-((w*h)/(w+h)*9)-(w+h)/20,h*10-(w*h)/(w+h)*2);
+    ctx.font = ((w*h)/(w+h)*3)+"px 'Patrick Hand SC'";
+    ctx.fillText("Press [R] to restart",w*10-((w*h)/(w+h)*11)-(w+h)/20,h*10+(w*h)/(w+h)*2);
+    state=0;
     return;
   }
   //tick rate
@@ -78,8 +82,7 @@ function checkTime(i) {
 }
 
 function cleanUp() {
-  ctx.fillStyle = "rgb(50,50,60)";
-  ctx.fillRect(tail[0]*size, tail[1]*size, size, size);
+  ctx.clearRect(tail[0]*size, tail[1]*size, size, size);
 }
 
 function Apple(){
@@ -104,18 +107,23 @@ switch (event.key) {
     }
     break;
   case "ArrowUp":
-  if(Dir[0][1]!=1){
+    if(Dir[0][1]!=1){
       Dir.push([0,-1]);
     }
     break;
   case "ArrowLeft":
-  if(Dir[0][0]!=1){
+    if(Dir[0][0]!=1){
       Dir.push([-1,0]);
     }
     break;
   case "ArrowRight":
-  if(Dir[0][0]!=-1){
+    if(Dir[0][0]!=-1){
       Dir.push([1,0]);
+    }
+    break;
+  case "r":
+    if(state==0){
+      preGame()
     }
     break;
   default:

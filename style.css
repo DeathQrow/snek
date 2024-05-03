@@ -26,6 +26,9 @@ body {
 #points{
   width: 25%;
 }
+#fps{
+  color: lime;
+}
 #canvasContainer{
   width: 100%;
   text-align: center;

@@ -10,7 +10,9 @@ c.height = h*size;
 var fps = document.getElementById("fps");
 var currentFrame = 0;
 var lastFrame = 0;
-var frameSkip = 0;
+var last30fps = [];
+var avgfps = 0;
+var skipFrame = 0;
 var state = 1;
 
 //innitial game set up
@@ -22,7 +24,7 @@ function preGame(){
   DirMem = [[1,0]];
   Score = 0;
   state = 1;
-  frameSkip = 0;
+  skipFrame = 0;
   document.getElementById("points").innerText = "Score: " + Score;
   snake = [[1,3]];
   tail = Array.from(snake[snake.length - 1]);
@@ -35,7 +37,12 @@ function preGame(){
 function Render(){
   const time = new Date();
   currentFrame = time[Symbol.toPrimitive]('number');
-  fps.innerText = (1000/(currentFrame-lastFrame)).toFixed(2)+" fps";
+  last30fps.push(1000/(currentFrame-lastFrame));
+  avgfps = 0;
+  last30fps.forEach(n => avgfps += n)
+  avgfps/= last30fps.length;
+  fps.innerText = (1000/(currentFrame-lastFrame)).toFixed(2)+" fps avg: "+avgfps.toFixed(2);
+
   lastFrame = time[Symbol.toPrimitive]('number');
   if(state==1) {
     if(snake.length>1){
@@ -44,20 +51,20 @@ function Render(){
     }
     ctx.fillStyle = "rgb(60,150,90)";
     if(Math.abs(Dir[0][1])!=1){
-      ctx.fillRect((snake[0][0]+(Dir[0][0]*frameSkip/6))*size, snake[0][1]*size, size, size);
+      ctx.fillRect((snake[0][0]+(Dir[0][0]*skipFrame/5))*size, snake[0][1]*size, size, size);
     } else if(Math.abs(Dir[0][0])!=1){
-      ctx.fillRect(snake[0][0]*size, (snake[0][1]+(Dir[0][1]*frameSkip/6))*size, size, size);
+      ctx.fillRect(snake[0][0]*size, (snake[0][1]+(Dir[0][1]*skipFrame/5))*size, size, size);
     }
     cleanUp();
   }
   
-  if(frameSkip >= 6 && state == 1) {
+  if(skipFrame >= 5 && state == 1) {
     gameLoop(); 
     
-    frameSkip = 0;
+    skipFrame = 0;
   }
-  frameSkip++;
-  setTimeout(Render, 1000/60)
+  skipFrame++;
+  setTimeout(Render, 1000/64)
 }
 
 //the game loop
@@ -132,23 +139,23 @@ function checkTime(i) {
 function cleanUp() {
   if(snake.length>1){
     if(DirMem[0][0]==1){
-        ctx.clearRect((tail[0]+(DirMem[0][0]*(frameSkip-1)/6))*size, tail[1]*size, size/6, size);
+        ctx.clearRect((tail[0]+(DirMem[0][0]*(skipFrame-1)/5))*size, tail[1]*size, size/5, size);
       } else if(DirMem[0][0]==-1){
-        ctx.clearRect((tail[0]+(DirMem[0][0]*(frameSkip-6)/6))*size, tail[1]*size, size/6, size);
+        ctx.clearRect((tail[0]+(DirMem[0][0]*(skipFrame-5)/5))*size, tail[1]*size, size/5, size);
       } else if(DirMem[0][1]==1){
-        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(frameSkip-1)/6))*size, size, size/6);
+        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(skipFrame-1)/5))*size, size, size/5);
       } else if(DirMem[0][1]==-1){
-        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(frameSkip-6)/6))*size, size, size/6);
+        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(skipFrame-5)/5))*size, size, size/5);
       }
   } else {
     if(Dir[0][0]==1){
-      ctx.clearRect((tail[0]+(Dir[0][0]*(frameSkip-1)/6))*size, tail[1]*size, size/6, size);
+      ctx.clearRect((tail[0]+(Dir[0][0]*(skipFrame-1)/5))*size, tail[1]*size, size/5, size);
     } else if(Dir[0][0]==-1){
-      ctx.clearRect((tail[0]+(Dir[0][0]*(frameSkip-6)/6))*size, tail[1]*size, size/6, size);
+      ctx.clearRect((tail[0]+(Dir[0][0]*(skipFrame-5)/5))*size, tail[1]*size, size/5, size);
     } else if(Dir[0][1]==1){
-      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(frameSkip-1)/6))*size, size, size/6);
+      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(skipFrame-1)/5))*size, size, size/5);
     } else if(Dir[0][1]==-1){
-      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(frameSkip-6)/6))*size, size, size/6);
+      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(skipFrame-5)/5))*size, size, size/5);
     }
   }
 }
@@ -170,22 +177,22 @@ if (event.defaultPrevented) {
 
 switch (event.key) {
   case "ArrowDown":
-    if(Math.abs(Dir[0][1])!=1){
+    if(Math.abs(Dir[Dir.length-1][1])!=1){
       Dir.push([0,1]);
     }
     break;
   case "ArrowUp":
-    if(Math.abs(Dir[0][1])!=1){
+    if(Math.abs(Dir[Dir.length-1][1])!=1){
       Dir.push([0,-1]);
     }
     break;
   case "ArrowLeft":
-    if(Math.abs(Dir[0][0])!=1){
+    if(Math.abs(Dir[Dir.length-1][0])!=1){
       Dir.push([-1,0]);
     }
     break;
   case "ArrowRight":
-    if(Math.abs(Dir[0][0])!=1){
+    if(Math.abs(Dir[Dir.length-1][0])!=1){
       Dir.push([1,0]);
     }
     break;

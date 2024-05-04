@@ -1,14 +1,14 @@
 //canvas setup
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
-var w = 20;
-var h = 20;
+var w = 15;
+var h = 15;
 if(window.innerHeight*w>(window.innerWidth*h+50)) {
   var size = Math.ceil((window.innerWidth*0.9)/w);
 } else {
   var size = Math.ceil((window.innerHeight*0.85)/h);
 }
-var subframes = 5;
+var subframes = 6;
 if(size%subframes!=0){
   size -= size%subframes;
 }
@@ -36,7 +36,7 @@ function preGame(){
   c.width = w*size;
   c.height = h*size;
   ctx.fillStyle = "rgb(50,50,60)";
-  ctx.font = ((w*h)/(w+h)*size/3)+"px 'Patrick Hand SC'";
+  ctx.font = ((w*h)/(w+h)*size/3)+"px 'Patrick Hand'";
   ctx.clearRect(0,0,w*size,h*size);
   Dir = [[1,0]];
   DirMem = [[1,0]];
@@ -47,7 +47,7 @@ function preGame(){
   snake = [[1,3]];
   tail = Array.from(snake[snake.length - 1]);
   Apples = [];
-  for(var i = 0; i < 3; i++){
+  for(var i = 0; i < 10; i++){
     Apple();
   }
 }
@@ -75,14 +75,22 @@ function Render(){
       ctx.fillRect(snake[0][0]*size, (snake[0][1]+(Dir[0][1]*skipFrame/subframes))*size, size, size);
     }
     cleanUp();
-  }
-  
-  if(skipFrame >= subframes && state == 1) {
+  if(skipFrame >= subframes) {
     gameLoop(); 
-    
     skipFrame = 0;
+    if(Score==(w*h-1)){
+      ctx.fillStyle = "rgba(150, 150, 30, 80%)";
+      ctx.fillRect(0,0,w*size,h*size);
+      ctx.fillStyle = "orange";
+      ctx.textAlign = "center";
+      ctx.fillText("You Win!",(w*size/2),h*size/2.5);
+      ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+      ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
+      state=0;
+    }
   }
   skipFrame++;
+  }
   setTimeout(Render, 1000/64)
 }
 
@@ -96,19 +104,23 @@ function gameLoop() {
   }
   snake[0][0]+=Dir[0][0];
   snake[0][1]+=Dir[0][1];
-  if(DirMem.length+1>=snake.length) {
-    DirMem.shift();
-  }
-  DirMem.push(Dir[0]);
   
   if (Apples.find(ap => ap[0] == snake[0][0] && ap[1] == snake[0][1]) != undefined){
     Apples.splice(Apples.findIndex(ap => ap[0] == snake[0][0] && ap[1] == snake[0][1]),1);
     Score++;
+    var appleSFX = new Audio("Sounds/apple_collect.mp3");
+    appleSFX.volume = soundVol;
+    appleSFX.play();
     document.getElementById("points").innerText = "Score: " + Score;
     snake.push(tail);
+    ctx.fillStyle = "rgb(120,200,50)";
+    ctx.fillRect(snake[snake.length-1][0]*size, snake[snake.length-1][1]*size, size, size);
     if(Score < (w*h-Apples.length-1)) Apple();
+  } 
+  if(DirMem.length+1>=snake.length) {
+    DirMem.shift();
   }
-  
+  DirMem.push(Dir[0]);
   tail = Array.from(snake[snake.length - 1]);
   if(Dir.length>1) Dir.shift()
 
@@ -119,14 +131,6 @@ function gameLoop() {
     gradient.addColorStop(1, "transparent");
     ctx.fillStyle = gradient;
     ctx.fillRect((snake[0][0]-2)*size, (snake[0][1]-2)*size, 5*size, 5*size);
-    if((snake[0][0]<0||snake[0][0]>=w||snake[0][1]<0||snake[0][1]>=h) && snake.length > 1){
-      ctx.fillStyle = "rgb(120,200,50)";
-      ctx.fillRect(snake[1][0]*size, snake[1][1]*size, size, size);
-    }
-    if((snake[0][0]<0||snake[0][0]>=w||snake[0][1]<0||snake[0][1]>=h) && snake.length > 2){
-      ctx.fillStyle = "rgb(120,200,50)";
-      ctx.fillRect(snake[2][0]*size, snake[2][1]*size, size, size);
-    }
     ctx.fillStyle = "rgb(60,150,90)";
     ctx.fillRect(snake[0][0]*size, snake[0][1]*size, size, size);
     ctx.fillStyle = "rgba(50, 50, 50, 80%)";
@@ -134,8 +138,11 @@ function gameLoop() {
     ctx.fillStyle = "darkred";
     ctx.textAlign = "center";
     ctx.fillText("Game Over",(w*size/2),h*size/2.5);
-    ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand SC'";
+    ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
     ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
+    var deathSFX = new Audio("Sounds/bonk.mp3");
+    deathSFX.volume = soundVol;
+    deathSFX.play();
     state=0;
     return;
   }

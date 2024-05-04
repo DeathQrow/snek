@@ -1,12 +1,23 @@
 //canvas setup
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
-var size = 20;
 var w = 20;
 var h = 20;
+if(window.innerHeight*w>(window.innerWidth*h+50)) {
+  var size = Math.ceil((window.innerWidth*0.9)/w);
+} else {
+  var size = Math.ceil((window.innerHeight*0.85)/h);
+}
+console.log(size)
+var subframes = 5;
+if(size%subframes!=0){
+  size -= size%subframes;
+}
+
+console.log(size)
 c.width = w*size;
 c.height = h*size;
-
+c.style.background = "repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 0% 0% /"+200/w+"% "+200/h+"%";
 var fps = document.getElementById("fps");
 var currentFrame = 0;
 var lastFrame = 0;
@@ -17,8 +28,9 @@ var state = 1;
 
 //innitial game set up
 function preGame(){
+  
   ctx.fillStyle = "rgb(50,50,60)";
-  ctx.font = ((w*h)/(w+h)*5)+"px 'Patrick Hand SC'";
+  ctx.font = ((w*h)/(w+h)*size/3)+"px 'Patrick Hand SC'";
   ctx.clearRect(0,0,w*size,h*size);
   Dir = [[1,0]];
   DirMem = [[1,0]];
@@ -29,12 +41,13 @@ function preGame(){
   snake = [[1,3]];
   tail = Array.from(snake[snake.length - 1]);
   Apples = [];
-  Apple();
-  Apple();
-  Apple();
+  for(var i = 0; i < 3; i++){
+    Apple();
+  }
 }
 
 function Render(){
+  
   const time = new Date();
   currentFrame = time[Symbol.toPrimitive]('number');
   last30fps.push(1000/(currentFrame-lastFrame));
@@ -51,14 +64,14 @@ function Render(){
     }
     ctx.fillStyle = "rgb(60,150,90)";
     if(Math.abs(Dir[0][1])!=1){
-      ctx.fillRect((snake[0][0]+(Dir[0][0]*skipFrame/5))*size, snake[0][1]*size, size, size);
+      ctx.fillRect((snake[0][0]+(Dir[0][0]*skipFrame/subframes))*size, snake[0][1]*size, size, size);
     } else if(Math.abs(Dir[0][0])!=1){
-      ctx.fillRect(snake[0][0]*size, (snake[0][1]+(Dir[0][1]*skipFrame/5))*size, size, size);
+      ctx.fillRect(snake[0][0]*size, (snake[0][1]+(Dir[0][1]*skipFrame/subframes))*size, size, size);
     }
     cleanUp();
   }
   
-  if(skipFrame >= 5 && state == 1) {
+  if(skipFrame >= subframes && state == 1) {
     gameLoop(); 
     
     skipFrame = 0;
@@ -87,7 +100,7 @@ function gameLoop() {
     Score++;
     document.getElementById("points").innerText = "Score: " + Score;
     snake.push(tail);
-    Apple();
+    if(Score < (w*h-Apples.length-1)) Apple();
   }
   
   tail = Array.from(snake[snake.length - 1]);
@@ -95,11 +108,11 @@ function gameLoop() {
 
   //game over condition
   if((snake[0][0]<0||snake[0][0]>=w||snake[0][1]<0||snake[0][1]>=h||snake.slice(1).find(part => part[0] == snake[0][0] && part[1] == snake[0][1]) != undefined) && state == 1){
-    const gradient = ctx.createRadialGradient(snake[0][0]*size+10, snake[0][1]*size+10, 15, snake[0][0]*size+10, snake[0][1]*size+10,40);
+    const gradient = ctx.createRadialGradient((snake[0][0]+0.5)*size, (snake[0][1]+0.5)*size, 0.75*size, (snake[0][0]+0.5)*size, (snake[0][1]+0.5)*size,2*size);
     gradient.addColorStop(0, "red");
     gradient.addColorStop(1, "transparent");
     ctx.fillStyle = gradient;
-    ctx.fillRect(snake[0][0]*size-40, snake[0][1]*size-40, 100, 100);
+    ctx.fillRect((snake[0][0]-2)*size, (snake[0][1]-2)*size, 5*size, 5*size);
     if((snake[0][0]<0||snake[0][0]>=w||snake[0][1]<0||snake[0][1]>=h) && snake.length > 1){
       ctx.fillStyle = "rgb(120,200,50)";
       ctx.fillRect(snake[1][0]*size, snake[1][1]*size, size, size);
@@ -113,9 +126,10 @@ function gameLoop() {
     ctx.fillStyle = "rgba(50, 50, 50, 80%)";
     ctx.fillRect(0,0,w*size,h*size);
     ctx.fillStyle = "darkred";
-    ctx.fillText("Game Over",w*10-((w*h)/(w+h)*9)-(w+h)/20,h*10-(w*h)/(w+h)*2);
-    ctx.font = ((w*h)/(w+h)*3)+"px 'Patrick Hand SC'";
-    ctx.fillText("Press [R] to restart",w*10-((w*h)/(w+h)*11)-(w+h)/20,h*10+(w*h)/(w+h)*2);
+    ctx.textAlign = "center";
+    ctx.fillText("Game Over",(w*size/2),h*size/2.5);
+    ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand SC'";
+    ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
     state=0;
     return;
   }
@@ -139,23 +153,23 @@ function checkTime(i) {
 function cleanUp() {
   if(snake.length>1){
     if(DirMem[0][0]==1){
-        ctx.clearRect((tail[0]+(DirMem[0][0]*(skipFrame-1)/5))*size, tail[1]*size, size/5, size);
+        ctx.clearRect((tail[0]+(DirMem[0][0]*(skipFrame-1)/subframes))*size, tail[1]*size, size/subframes, size);
       } else if(DirMem[0][0]==-1){
-        ctx.clearRect((tail[0]+(DirMem[0][0]*(skipFrame-5)/5))*size, tail[1]*size, size/5, size);
+        ctx.clearRect((tail[0]+(DirMem[0][0]*(skipFrame-subframes)/subframes))*size, tail[1]*size, size/subframes, size);
       } else if(DirMem[0][1]==1){
-        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(skipFrame-1)/5))*size, size, size/5);
+        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(skipFrame-1)/subframes))*size, size, size/subframes);
       } else if(DirMem[0][1]==-1){
-        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(skipFrame-5)/5))*size, size, size/5);
+        ctx.clearRect(tail[0]*size, (tail[1]+(DirMem[0][1]*(skipFrame-subframes)/subframes))*size, size, size/subframes);
       }
   } else {
     if(Dir[0][0]==1){
-      ctx.clearRect((tail[0]+(Dir[0][0]*(skipFrame-1)/5))*size, tail[1]*size, size/5, size);
+      ctx.clearRect((tail[0]+(Dir[0][0]*(skipFrame-1)/subframes))*size, tail[1]*size, size/subframes, size);
     } else if(Dir[0][0]==-1){
-      ctx.clearRect((tail[0]+(Dir[0][0]*(skipFrame-5)/5))*size, tail[1]*size, size/5, size);
+      ctx.clearRect((tail[0]+(Dir[0][0]*(skipFrame-subframes)/subframes))*size, tail[1]*size, size/subframes, size);
     } else if(Dir[0][1]==1){
-      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(skipFrame-1)/5))*size, size, size/5);
+      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(skipFrame-1)/subframes))*size, size, size/subframes);
     } else if(Dir[0][1]==-1){
-      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(skipFrame-5)/5))*size, size, size/5);
+      ctx.clearRect(tail[0]*size, (tail[1]+(Dir[0][1]*(skipFrame-subframes)/subframes))*size, size, size/subframes);
     }
   }
 }
@@ -164,7 +178,7 @@ function Apple(){
   do {
     var xRand = Math.floor(Math.random() * w);
     var yRand = Math.floor(Math.random() * h);
-  } while(snake.find(part => part[0] == xRand && part[1] == yRand) != undefined || (xRand == tail[0] && yRand == tail[1]))
+  } while(snake.find(part => part[0] == xRand && part[1] == yRand) != undefined || (Apples.find(ap => ap[0] == xRand && ap[1] == yRand) != undefined))
   Apples.push([xRand, yRand]);
   ctx.fillStyle = "red";
   ctx.fillRect(xRand*size,yRand*size,size,size);

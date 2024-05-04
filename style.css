@@ -37,5 +37,5 @@ body {
   border: 5px solid #d3d3d3;
   display: inline;
   background-color: rgb(50,50,60);
-  background: repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 50% / 40px 40px;
+  background: repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 50% / 10% 10%;
 }

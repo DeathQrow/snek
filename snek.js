@@ -8,13 +8,10 @@ if(window.innerHeight*w>(window.innerWidth*h+50)) {
 } else {
   var size = Math.ceil((window.innerHeight*0.85)/h);
 }
-console.log(size)
 var subframes = 5;
 if(size%subframes!=0){
   size -= size%subframes;
 }
-
-console.log(size)
 c.width = w*size;
 c.height = h*size;
 c.style.background = "repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 0% 0% /"+200/w+"% "+200/h+"%";
@@ -28,7 +25,16 @@ var state = 1;
 
 //innitial game set up
 function preGame(){
-  
+  if(window.innerHeight*w>(window.innerWidth*h+50)) {
+    size = Math.ceil((window.innerWidth*0.9)/w);
+  } else {
+    size = Math.ceil((window.innerHeight*0.85)/h);
+  }
+  if(size%subframes!=0){
+    size -= size%subframes;
+  }
+  c.width = w*size;
+  c.height = h*size;
   ctx.fillStyle = "rgb(50,50,60)";
   ctx.font = ((w*h)/(w+h)*size/3)+"px 'Patrick Hand SC'";
   ctx.clearRect(0,0,w*size,h*size);

@@ -28,15 +28,47 @@ body {
 }
 #fps{
   color: lime;
-  float: left;
+  position: absolute;
 }
 #sound{
+  position: relative;
   float: right;
+  top: 5px;
 }
-#sound div{
+.sound{
+  height: 50px;
+  width: 60px;
+  float: left;
+}
+.sound img{
+  position: absolute;
+}
+.Container{
+  background-color: transparent;
   height: 50px;
   width: 50px;
-  float: left;
+  position: absolute;
+  border-radius: 25px;
+  transition: height 0.5s ease-in-out, background-color 0.5s ease-in-out;
+}
+.sound:hover > .Container{
+  height: 150px;
+  background-color: #aaaaaa;
+}
+.sound:hover .volBar{
+  height: 80px;
+  visibility: visible;
+  margin-top: 55px; 
+}
+.volBar{
+  height: 0px;
+  width: 10px;
+  margin-top: 25px; 
+  writing-mode:vertical-lr;
+  position: absolute;
+  margin-left: 20px;
+  visibility: hidden;
+  transition: height 0.5s ease-in-out, margin-top 0.5s ease-in-out, visibility 0.1s ease-in 0.2s;
 }
 #canvasContainer{
   width: 100%;
@@ -46,5 +78,4 @@ body {
   border: 5px solid #d3d3d3;
   display: inline;
   background-color: rgb(50,50,60);
-  background: repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 50% / 10% 10%;
 }

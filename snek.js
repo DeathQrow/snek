@@ -1,68 +1,38 @@
 //canvas setup
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
-var w = 15;
-var h = 15;
-if(window.innerHeight*w>(window.innerWidth*h+50)) {
-  var size = Math.ceil((window.innerWidth*0.9)/w);
+var w = 10;
+var h = 10;
+if(window.innerHeight*w>(window.innerWidth+130)*h) {
+  var size = Math.ceil((window.innerWidth-20)/w);
 } else {
-  var size = Math.ceil((window.innerHeight*0.85)/h);
+  var size = Math.ceil((window.innerHeight-130)/h);
 }
-var subframes = 6;
-if(size%subframes!=0){
-  size -= size%subframes;
-}
-c.width = w*size;
-c.height = h*size;
 c.style.background = "repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 0% 0% /"+200/w+"% "+200/h+"%";
-var fps = document.getElementById("fps");
-var currentFrame = 0;
-var lastFrame = 0;
-var last30fps = [];
-var avgfps = 0;
-var skipFrame = 0;
-var state = 1;
+var subframes = 10;
 
 //innitial game set up
 function preGame(){
-  if(window.innerHeight*w>(window.innerWidth*h+50)) {
-    size = Math.ceil((window.innerWidth*0.9)/w);
-  } else {
-    size = Math.ceil((window.innerHeight*0.85)/h);
-  }
-  if(size%subframes!=0){
-    size -= size%subframes;
-  }
   c.width = w*size;
   c.height = h*size;
   ctx.fillStyle = "rgb(50,50,60)";
-  ctx.font = ((w*h)/(w+h)*size/3)+"px 'Patrick Hand'";
   ctx.clearRect(0,0,w*size,h*size);
-  Dir = [[1,0]];
-  DirMem = [[1,0]];
+  Dir = [[0,0]];
+  DirMem = [[0,0]];
   Score = 0;
   state = 1;
-  skipFrame = 0;
+  skipFrame = 1;
   document.getElementById("points").innerText = "Score: " + Score;
-  snake = [[1,3]];
+  snake = [[Math.floor((w-1)/2),Math.floor((h-1)/2)]];
   tail = Array.from(snake[snake.length - 1]);
   Apples = [];
-  for(var i = 0; i < 10; i++){
+  for(var i = 0; i < 3; i++){
     Apple();
   }
 }
 
 function Render(){
-  
-  const time = new Date();
-  currentFrame = time[Symbol.toPrimitive]('number');
-  last30fps.push(1000/(currentFrame-lastFrame));
-  avgfps = 0;
-  last30fps.forEach(n => avgfps += n)
-  avgfps/= last30fps.length;
-  fps.innerText = (1000/(currentFrame-lastFrame)).toFixed(2)+" fps avg: "+avgfps.toFixed(2);
 
-  lastFrame = time[Symbol.toPrimitive]('number');
   if(state==1) {
     if(snake.length>1){
       ctx.fillStyle = "rgb(120,200,50)";
@@ -75,27 +45,12 @@ function Render(){
       ctx.fillRect(snake[0][0]*size, (snake[0][1]+(Dir[0][1]*skipFrame/subframes))*size, size, size);
     }
     cleanUp();
-  if(skipFrame >= subframes) {
-    gameLoop(); 
-    skipFrame = 0;
-    if(Score==(w*h-1)){
-      ctx.fillStyle = "rgba(150, 150, 30, 80%)";
-      ctx.fillRect(0,0,w*size,h*size);
-      ctx.fillStyle = "orange";
-      ctx.textAlign = "center";
-      ctx.fillText("You Win!",(w*size/2),h*size/2.5);
-      ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
-      ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
-      state=0;
-    }
+    
   }
-  skipFrame++;
-  }
-  setTimeout(Render, 1000/64)
 }
 
 //the game loop
-function gameLoop() {
+function Logic() {
   for(var i=snake.length-1; i>=0; i--){
     if(i!=0){
      snake[i][0] = snake[i-1][0];
@@ -135,8 +90,9 @@ function gameLoop() {
     ctx.fillRect(snake[0][0]*size, snake[0][1]*size, size, size);
     ctx.fillStyle = "rgba(50, 50, 50, 80%)";
     ctx.fillRect(0,0,w*size,h*size);
-    ctx.fillStyle = "darkred";
     ctx.textAlign = "center";
+    ctx.fillStyle = "darkred";
+    ctx.font = ((w*h)/(w+h)*size/3)+"px 'Patrick Hand'";
     ctx.fillText("Game Over",(w*size/2),h*size/2.5);
     ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
     ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
@@ -146,21 +102,17 @@ function gameLoop() {
     state=0;
     return;
   }
-}
-
-function Clock() {
-  const today = new Date();
-  var h = today.getHours();
-  var m = today.getMinutes();
-  var s = today.getSeconds();
-  m = checkTime(m);
-  s = checkTime(s);
-  document.getElementById('clock').innerHTML =  h + ":" + m + ":" + s;
-  setTimeout(Clock, 1000);
-}
-function checkTime(i) {
-  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-  return i;
+  if(Score==(w*h-1)){
+    ctx.fillStyle = "rgba(150, 150, 30, 80%)";
+    ctx.fillRect(0,0,w*size,h*size);
+    ctx.fillStyle = "orange";
+    ctx.textAlign = "center";
+    ctx.fillText("You Win!",(w*size/2),h*size/2.5);
+    ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+    ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
+    state=0;
+    return;
+  }
 }
 
 function cleanUp() {
@@ -196,42 +148,3 @@ function Apple(){
   ctx.fillStyle = "red";
   ctx.fillRect(xRand*size,yRand*size,size,size);
 }
-
-window.addEventListener("keydown", function (event) {
-if (event.defaultPrevented) {
-  return; // Do nothing if the event was already processed
-}
-
-switch (event.key) {
-  case "ArrowDown":
-    if(Math.abs(Dir[Dir.length-1][1])!=1){
-      Dir.push([0,1]);
-    }
-    break;
-  case "ArrowUp":
-    if(Math.abs(Dir[Dir.length-1][1])!=1){
-      Dir.push([0,-1]);
-    }
-    break;
-  case "ArrowLeft":
-    if(Math.abs(Dir[Dir.length-1][0])!=1){
-      Dir.push([-1,0]);
-    }
-    break;
-  case "ArrowRight":
-    if(Math.abs(Dir[Dir.length-1][0])!=1){
-      Dir.push([1,0]);
-    }
-    break;
-  case "r":
-    if(state==0){
-      preGame()
-    }
-    break;
-  default:
-    return; // Quit when this doesn't handle the key event.
-}
-// Cancel the default action to avoid it being handled twice
-event.preventDefault();
-}, true);
-// the last option dispatches the event to the listener first, then dispatches event to window

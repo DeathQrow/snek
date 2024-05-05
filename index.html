@@ -7,26 +7,37 @@
   <link href='https://fonts.googleapis.com/css2?family=Patrick+Hand' rel='stylesheet'>
   <link rel="stylesheet" href="style.css">
 </head>
-<body onload="preGame(), Clock(), Render()">
+<body onload="preGame(), globalClock()">
   <div class="top">
     <div id="clock"></div>
     <div id="title">Snek RPG >:3</div>
     <div id="points">Score: 0</div>
   </div>
-  <div id="fps" hidden>0 fps</div>
+  <div id="fps">0 fps</div>
   <div id="sound">
-    <div>
+    <div class="sound">
+      <div id="sfxVolContainer" class="Container">
+        <input type="range" id="sfxVolBar" class="volBar">
+      </div>
       <img id="sfxOn" src="Images/audioOn.png" onclick="turnOffSounds()">
       <img id="sfxOff"src="Images/audioOff.png" hidden onclick="turnOnSounds()">
     </div>
-    <div>
-      <img id="musicOn" src="Images/musicOn.png" onclick = "turnOffMusic()">
-      <img id="musicOff" src="Images/musicOff.png" hidden onclick = "turnOnMusic()">
+    <div class="sound">
+      <div id="sfxVolContainer" class="Container">
+        <input type="range" id="musicVolBar" class="volBar">
+      </div>
+        <img id="musicOn" src="Images/musicOn.png" onclick = "turnOffMusic()">
+        <img id="musicOff" src="Images/musicOff.png" hidden onclick = "turnOnMusic()">
     </div>
   </div>
   <br><br>
-  <div id="canvasContainer"><canvas id="myCanvas">Your browser does not support the HTML canvas tag.</canvas></div>
-  <div><audio id="bgm" loop><source src="https://kyattoworks.com/wp-content/uploads/2022/03/Bunnyhop.mp3" type="audio/mpeg"></audio></div>
+  <div id="canvasContainer">
+    <canvas id="myCanvas">Your browser does not support the HTML canvas tag.</canvas>
+  </div>
+  <div>
+    <audio id="bgm" src="https://kyattoworks.com/wp-content/uploads/2022/03/Bunnyhop.mp3" type="audio/mpeg" loop></audio>
+  </div>
+  <script src="master.js"></script>
   <script src="snek.js"></script>
   <script src="audioControl.js"></script>
 </body>

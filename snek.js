@@ -3,13 +3,14 @@ var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 var w = 10;
 var h = 10;
+var subframes = 10;
 if(window.innerHeight*w>(window.innerWidth+130)*h) {
   var size = Math.ceil((window.innerWidth-20)/w);
 } else {
   var size = Math.ceil((window.innerHeight-130)/h);
 }
+if(size%subframes!=0) size-=size%subframes;
 c.style.background = "repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 0% 0% /"+200/w+"% "+200/h+"%";
-var subframes = 10;
 
 //innitial game set up
 function preGame(){

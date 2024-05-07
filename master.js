@@ -9,12 +9,23 @@ function globalClock(){
   frameRate()
   soundVol = (soundBar.value/100);
   bgm.volume = (musicBar.value/100);
+  if(state==1){
+  if(skipFrame>0&&skipFrame<=(subframes/4)&&canGrace>=1&&graceRequest==1&&document.getElementById("graceToggle").checked==1){
+    Grace();
+    canGrace = 0;
+    graceRequest=0;
+  } 
   Render();
-  if((skipFrame) >= subframes && state==1) {
+  if((skipFrame) == subframes) {
     Logic(); 
     skipFrame = 0;
+    canGrace += 0.5;
+    graceRequest = 0;
+    console.log(canGrace)
   }
+  if(Dir.length>2) canGrace = 0;
   skipFrame++;
+  }
   Clock();
   setTimeout(globalClock, 1000/64)
 }
@@ -93,6 +104,7 @@ window.addEventListener("keydown", function (event) {
     default:
       return; // Quit when this doesn't handle the key event.
   }
+  graceRequest=1;
   // Cancel the default action to avoid it being handled twice
   event.preventDefault();
 }, true); // the last option dispatches the event to the listener first, then dispatches event to window

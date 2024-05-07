@@ -6,6 +6,7 @@
   <title>Snek RPG >:3</title>
   <link href='https://fonts.googleapis.com/css2?family=Patrick+Hand' rel='stylesheet'>
   <link rel="stylesheet" href="style.css">
+  <audio id="bgm" src="https://kyattoworks.com/wp-content/uploads/2022/03/Bunnyhop.mp3" type="audio/mpeg" loop></audio>
 </head>
 <body onload="preGame(), globalClock()">
   <div class="top">
@@ -34,9 +35,7 @@
   <div id="canvasContainer">
     <canvas id="myCanvas">Your browser does not support the HTML canvas tag.</canvas>
   </div>
-  <div>
-    <audio id="bgm" src="https://kyattoworks.com/wp-content/uploads/2022/03/Bunnyhop.mp3" type="audio/mpeg" loop></audio>
-  </div>
+  <input id="graceToggle" type="checkbox">Grace toggle
   <script src="master.js"></script>
   <script src="snek.js"></script>
   <script src="audioControl.js"></script>

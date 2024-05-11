@@ -76,6 +76,13 @@ body {
 }
 #myCanvas {
   border: 5px solid #d3d3d3;
+  position: absolute;
+  background-color: transparent;
+}
+#bgCanvas {
+  border: 5px solid #d3d3d3;
   display: inline;
-  background-color: rgb(50,50,60);
+}
+#snek_sheet{
+  display: none;
 }

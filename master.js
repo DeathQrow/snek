@@ -7,14 +7,14 @@ var state = 1;
 
 var fps = 60;
 var now;
-var then = Date.now();
+var then = performance.now();
 var interval = 1000/fps;
 var delta;
 
 function globalClock(){
   
   requestAnimationFrame(globalClock)
-  now = Date.now();
+  now = performance.now();
   delta = now - then;
   if (delta > interval) {
     then = now - (delta % interval);
@@ -22,13 +22,15 @@ function globalClock(){
   soundVol = (soundBar.value/100);
   bgm.volume = (musicBar.value/100);
   if(state==1){
-  if(skipFrame>0&&skipFrame<=(subframes/4)&&canGrace>=1&&graceRequest==1){
+  console.log(skipFrame, Dir[0], Dir[1], Dir[2], Dir[3])
+  if(skipFrame > 0 && skipFrame <= (subframes/2) && canGrace >= 1 && graceRequest == 1){
     Grace();
     canGrace = 0;
     graceRequest=0;
   } 
   Render();
-  if((skipFrame) == subframes) {
+  if(skipFrame == subframes) {
+    if(Dir.length>2) canGrace = 0;
     Logic(); 
     skipFrame = 0;
     canGrace += 0.5;

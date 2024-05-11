@@ -15,6 +15,10 @@
     <div id="points">Score: 0</div>
   </div>
   <div id="fps" hidden>0 fps</div>
+  <div id="canvasContainer">
+    <canvas id="myCanvas">Your browser does not support the HTML canvas tag.</canvas>
+    <canvas id="bgCanvas">Your browser does not support the HTML canvas tag.</canvas>
+  </div>
   <div id="sound">
     <div class="sound">
       <div id="sfxVolContainer" class="Container">
@@ -25,16 +29,11 @@
     </div>
     <div class="sound">
       <div id="sfxVolContainer" class="Container">
-        <input type="range" id="musicVolBar" class="volBar" value="0">
+        <input type="range" id="musicVolBar" class="volBar" value="0.1">
       </div>
         <img id="musicOn" src="Images/musicOn.png" onclick = "turnOffMusic()">
         <img id="musicOff" src="Images/musicOff.png" hidden onclick = "turnOnMusic()">
     </div>
-  </div>
-  <br><br>
-  <div id="canvasContainer">
-    <canvas id="myCanvas">Your browser does not support the HTML canvas tag.</canvas>
-    <canvas id="bgCanvas">Your browser does not support the HTML canvas tag.</canvas>
   </div>
   <div id="sprites">
     <img id="snek_sheet" src="Images/snek2.0_sheet.png">

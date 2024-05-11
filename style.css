@@ -31,7 +31,7 @@ body {
   position: absolute;
 }
 #sound{
-  position: relative;
+  position: abs;
   float: right;
   top: 5px;
 }
@@ -73,6 +73,8 @@ body {
 #canvasContainer{
   width: 100%;
   text-align: center;
+  position: absolute;
+  margin-top: 50px;
 }
 #myCanvas {
   border: 5px solid #d3d3d3;

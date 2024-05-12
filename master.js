@@ -161,8 +161,8 @@ function CanvasResizer(){
 }
 
 function StartScreen(){
-  globalClock()
   state = -1;
+  globalClock()
   ctx.drawImage(thumbnail,size,size*1.5,3*size,2*size)
   ctx.textAlign = "center";
   ctx.fillStyle = "white";

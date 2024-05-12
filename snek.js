@@ -3,8 +3,8 @@ var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 var b = document.getElementById("bgCanvas")
 var bctx = b.getContext("2d")
-var w = 10;
-var h = 10;
+var w = 5;
+var h = 5;
 var subframes = 10;
 var size;
 CanvasResizer();
@@ -19,11 +19,17 @@ appleSprite.src = "Images/apple.png"
 var highscore = document.getElementById("highscore");
 if(localStorage.getItem("highscore") == null) localStorage.setItem("highscore", 0)
 highscore.innerText = "Highscore: "+localStorage.getItem("highscore")
+var level = document.getElementById("level");
+var expBar = document.getElementById("expBar")
 
 //innitial game set usp
 function preGame(){
-  ctx.clearRect(0,0,w*size,h*size);
-  bctx.clearRect(0,0,w*size,h*size);
+  w=5;
+  h=5;
+  levelUpReq = 6;
+  appleSpawn = 1;
+  wait=0;
+  CanvasResizer();
   Dir = [[1,0]];
   Dir[1]=Dir[0];
   DirMem = [];
@@ -39,7 +45,7 @@ function preGame(){
   highscore.style = "font-weight:normal; color:black;"
   tail = Array.from(snake[snake.length - 1]);
   Apples = [];
-  for(var i = 0; i < 3; i++){
+  for(var i = 0; i < appleSpawn; i++){
     Apple();
   }
 }
@@ -150,6 +156,18 @@ function Render(){
     }
     for(i=0; i<Apples.length; i++) bctx.drawImage(appleSprite,-10,-10,170,170,Apples[i][0]*size,Apples[i][1]*size,size,size);
   }
+  expBar.style.width = 100-((levelUpReq-Score)/(2*w-4))*100+"%";
+  console.log(100-((levelUpReq-Score)/(2*w-4))*100)
+  if(wait>0){
+    ctx.textAlign = "center";
+    ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+    wait++;
+    ctx.fillStyle = "rgb("+(Math.sin(0.1*wait + 0) * 127 + 128)+","+(Math.sin(0.1*wait + 2*Math.PI/3) * 127 + 128)+","+(Math.sin(0.1*wait + 4*Math.PI/3) * 127 + 128)+")";
+    ctx.fillText("Level Up!",w*size/2,h*size/4);
+    if(wait==90){
+        wait = 0;
+    } 
+  }
 }
 
 //the game loop
@@ -172,6 +190,18 @@ function Logic() {
     DirMem.push(DirMem[DirMem.length-1])
     if(Score < (w*h-Apples.length-1)) Apple();
   } 
+  if(Score>0&&0==Score-levelUpReq){
+    levelUpReq += (2*w-2);
+    w++;
+    h++;
+    wait++;
+    level.innerText = "Level "+(w-4);
+    var levelUpSFX = new Audio("Sounds/levelUp.mp3");
+    levelUpSFX.volume = soundVol;
+    levelUpSFX.play();
+    Apple();
+    CanvasResizer();
+  }
   if(DirMem.length>=snake.length) {
     DirMem.pop();
   }
@@ -216,6 +246,7 @@ function Logic() {
     ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
     state=0;
   }
+
 }
 
 function Grace(){

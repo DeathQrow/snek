@@ -8,12 +8,16 @@
   <link rel="stylesheet" href="style.css">
   <audio id="bgm" src="https://kyattoworks.com/wp-content/uploads/2022/03/Bunnyhop.mp3" type="audio/mpeg" loop></audio>
 </head>
-<body onload="preGame(), globalClock()">
+<body onload="StartScreen()">
   <div class="top">
     <div id="clock"></div>
     <div id="title">Snek RPG >:3</div>
     <div id="points">Score: 0</div>
     <div id="highscore">Highscore: 0</div>
+  </div>
+  <div id="levelContainer">
+    <div id="expBar"></div>
+    <span id="level">Level 1</span>
   </div>
   <div id="fps" hidden>0 fps</div>
   <div id="canvasContainer">

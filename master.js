@@ -11,9 +11,10 @@ var then = performance.now();
 var interval = 1000/fps;
 var delta;
 var wait = 0;
+var thumbnail = new Image();
+thumbnail.src = "Images/tumbnail.png"
 
 function globalClock(){
-  
   requestAnimationFrame(globalClock)
   now = performance.now();
   delta = now - then;
@@ -44,25 +45,24 @@ function globalClock(){
       ctx.textAlign = "center";
       ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
       wait++;
-          console.log("meow meow")
-          ctx.fillStyle = "rgb("+(Math.sin(0.1*wait + 0) * 127 + 128)+","+(Math.sin(0.1*wait + 2*Math.PI/3) * 127 + 128)+","+(Math.sin(0.1*wait + 4*Math.PI/3) * 127 + 128)+")";
-          ctx.fillText("New Highscore!",w*size/2,h*size/4);
+      ctx.fillStyle = "rgb("+(Math.sin(0.1*wait + 0) * 127 + 128)+","+(Math.sin(0.1*wait + 2*Math.PI/3) * 127 + 128)+","+(Math.sin(0.1*wait + 4*Math.PI/3) * 127 + 128)+")";
+      ctx.fillText("New Highscore!",w*size/2,h*size/4);
       if(wait==255){
           wait = 0;
-        } 
+      } 
     }
   }
-  Clock();
   }
+  Clock();
 }
 
 window.onresize = CanvasResizer;
 
 function CanvasResizer(){
-  if(window.innerHeight*w>(window.innerWidth+130)*h) {
+  if(window.innerHeight*w>(window.innerWidth+150)*h) {
     size = Math.ceil((window.innerWidth-20)/w);
   } else {
-    size = Math.ceil((window.innerHeight-130)/h);
+    size = Math.ceil((window.innerHeight-150)/h);
   }
   if(size%subframes!=0) size-=size%subframes;
   b.style.background = "repeating-conic-gradient(#3d285d 0% 25%, #432c68 0% 50%) 0% 0% /"+200/w+"% "+200/h+"%";
@@ -149,6 +149,20 @@ function CanvasResizer(){
   }
 }
 
+function StartScreen(){
+  globalClock()
+  state = -1;
+  ctx.drawImage(thumbnail,size,size*1.5,3*size,2*size)
+  ctx.textAlign = "center";
+  ctx.fillStyle = "white";
+  ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+  ctx.fillText("Welcome to",(w*size/2),h*size/5);
+  ctx.textAlign = "center";
+  ctx.fillStyle = "white";
+  ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+  ctx.fillText("Press [Space] to start",(w*size/2),h*size/1.15);
+}
+
 function frameRate(){
   const time = new Date();
   currentFrame = time[Symbol.toPrimitive]('number');
@@ -176,42 +190,42 @@ window.addEventListener("keydown", function (event) {
 
   switch (event.key) {
     case "ArrowDown":
-      if(Math.abs(Dir[Dir.length-1][1])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][1])!=1){
         Dir.push([0,1]);
       }
       break;
     case "ArrowUp":
-      if(Math.abs(Dir[Dir.length-1][1])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][1])!=1){
         Dir.push([0,-1]);
       }
       break;
     case "ArrowLeft":
-      if(Math.abs(Dir[Dir.length-1][0])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][0])!=1){
         Dir.push([-1,0]);
       }
       break;
     case "ArrowRight":
-      if(Math.abs(Dir[Dir.length-1][0])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][0])!=1){
         Dir.push([1,0]);
       }
       break;
     case "s":
-      if(Math.abs(Dir[Dir.length-1][1])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][1])!=1){
         Dir.push([0,1]);
       }
       break;
     case "w":
-      if(Math.abs(Dir[Dir.length-1][1])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][1])!=1){
         Dir.push([0,-1]);
       }
       break;
     case "a":
-      if(Math.abs(Dir[Dir.length-1][0])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][0])!=1){
         Dir.push([-1,0]);
       }
       break;
     case "d":
-      if(Math.abs(Dir[Dir.length-1][0])!=1){
+      if(state==1&&Math.abs(Dir[Dir.length-1][0])!=1){
         Dir.push([1,0]);
       }
       break;
@@ -234,6 +248,11 @@ window.addEventListener("keydown", function (event) {
       if(soundBar.value==0){
         turnOnSounds();
       } else turnOffSounds();
+      break;
+    case " ":
+      if(state==-1){
+        preGame()
+      }
       break;
     default:
       return; // Quit when this doesn't handle the key event.

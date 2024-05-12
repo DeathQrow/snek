@@ -147,6 +147,17 @@ function CanvasResizer(){
     ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
     ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
   }
+  if(state==-1){
+    ctx.drawImage(thumbnail,size,size*1.5,3*size,2*size)
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+    ctx.fillText("Welcome to",(w*size/2),h*size/5);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+    ctx.fillText("Press [Space] to start",(w*size/2),h*size/1.15);
+  }
 }
 
 function StartScreen(){

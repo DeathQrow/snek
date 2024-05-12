@@ -41,6 +41,7 @@ function preGame(){
   canGrace = 1;
   graceRequest=0;
   document.getElementById("points").innerText = "Score: " + Score;
+  level.innerText = "Level "+(w-4);
   snake = [[Math.floor((w-1)/2),Math.floor((h-1)/2)],[Math.floor((w-1)/2)-1,Math.floor((h-1)/2)]];
   highscore.style = "font-weight:normal; color:black;"
   tail = Array.from(snake[snake.length - 1]);

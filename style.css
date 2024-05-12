@@ -7,24 +7,32 @@ body {
 .top{
   background-color: rgb(160, 221, 99);
   width: 100%;
-  height: 48px;
+  height: auto;
   overflow: auto;
 }
 .top div{
-  height: auto;
   float: left;
-  font-size: 25pt;
   text-align: center;
 }
 #title{
   width: 50%;
+  font-size: 40pt;
   font-weight:bolder;
 }
 #clock{
   width: 25%;
+  height: 100%;
+  font-size: 30pt;
+  padding-top: 10px;
 }
 #points{
   width: 25%;
+  height: 40px;
+  font-size: 30pt;
+}
+#highscore{
+  width: 25%;
+  font-size: 15pt;
 }
 #fps{
   color: lime;

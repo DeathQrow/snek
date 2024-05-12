@@ -5,7 +5,7 @@ var b = document.getElementById("bgCanvas")
 var bctx = b.getContext("2d")
 var w = 10;
 var h = 10;
-var subframes = 8;
+var subframes = 10;
 var size;
 CanvasResizer();
 var sheetSnek = document.getElementById("snek_sheet");
@@ -13,6 +13,12 @@ var xSheet = 0;
 var ySheet = 0;
 var Hturn = 1;
 var Tturn = 1;
+var Score;
+var appleSprite = new Image();
+appleSprite.src = "Images/apple.png"
+var highscore = document.getElementById("highscore");
+if(localStorage.getItem("highscore") == null) localStorage.setItem("highscore", 0)
+highscore.innerText = "Highscore: "+localStorage.getItem("highscore")
 
 //innitial game set usp
 function preGame(){
@@ -30,6 +36,7 @@ function preGame(){
   graceRequest=0;
   document.getElementById("points").innerText = "Score: " + Score;
   snake = [[Math.floor((w-1)/2),Math.floor((h-1)/2)],[Math.floor((w-1)/2)-1,Math.floor((h-1)/2)]];
+  highscore.style = "font-weight:normal; color:black;"
   tail = Array.from(snake[snake.length - 1]);
   Apples = [];
   for(var i = 0; i < 3; i++){
@@ -141,10 +148,7 @@ function Render(){
     }else{
       ctx.drawImage(sheetSnek,xSheet,0,160,160,(snake[0][0]+(Dir[1][0]*skipFrame/subframes))*size, (snake[0][1]+(Dir[1][1]*skipFrame/subframes))*size, size, size);
     }
-    bctx.fillStyle = "red";
-    for(i=0; i<Apples.length; i++) bctx.fillRect(Apples[i][0]*size,Apples[i][1]*size,size,size);
-  } else {
-    
+    for(i=0; i<Apples.length; i++) bctx.drawImage(appleSprite,-10,-10,170,170,Apples[i][0]*size,Apples[i][1]*size,size,size);
   }
 }
 
@@ -194,8 +198,13 @@ function Logic() {
     var deathSFX = new Audio("Sounds/bonk.mp3");
     deathSFX.volume = soundVol;
     deathSFX.play();
+    if(Score>localStorage.getItem("highscore")){
+      localStorage.setItem("highscore", Score);
+      highscore.innerText = "Highscore: "+Score;
+      highscore.style = "font-weight:bolder; color:red;"
+      Score++;
+    } 
     state=0;
-    return;
   }
   if(Score==(w*h-1)){
     ctx.fillStyle = "rgba(150, 150, 30, 80%)";
@@ -206,7 +215,6 @@ function Logic() {
     ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
     ctx.fillText("Press [R] to restart",w*size/2,h*size/1.8);
     state=0;
-    return;
   }
 }
 
@@ -223,6 +231,4 @@ function Apple(){
     var yRand = Math.floor(Math.random() * h);
   } while(snake.find(part => part[0] == xRand && part[1] == yRand) != undefined || (Apples.find(ap => ap[0] == xRand && ap[1] == yRand) != undefined))
   Apples.push([xRand, yRand]);
-  bctx.fillStyle = "red";
-  bctx.fillRect(xRand*size,yRand*size,size,size);
 }

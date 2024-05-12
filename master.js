@@ -10,6 +10,7 @@ var now;
 var then = performance.now();
 var interval = 1000/fps;
 var delta;
+var wait = 0;
 
 function globalClock(){
   
@@ -21,9 +22,9 @@ function globalClock(){
   frameRate()
   soundVol = (soundBar.value/100);
   bgm.volume = (musicBar.value/100);
+  if(musicBar.value==0) bgm.pause(); else bgm.play();
   if(state==1){
-  console.log(skipFrame, Dir[0], Dir[1], Dir[2], Dir[3])
-  if(skipFrame > 0 && skipFrame <= (subframes/2) && canGrace >= 1 && graceRequest == 1){
+  if(skipFrame > 0 && skipFrame <= (subframes/4) && canGrace >= 1 && graceRequest == 1){
     Grace();
     canGrace = 0;
     graceRequest=0;
@@ -38,6 +39,18 @@ function globalClock(){
   }
   if(Dir.length>2) canGrace = 0;
   skipFrame++;
+  } else {
+    if(Score>localStorage.getItem("highscore")){
+      ctx.textAlign = "center";
+      ctx.font = ((w*h)/(w+h)*size/6)+"px 'Patrick Hand'";
+      wait++;
+          console.log("meow meow")
+          ctx.fillStyle = "rgb("+(Math.sin(0.1*wait + 0) * 127 + 128)+","+(Math.sin(0.1*wait + 2*Math.PI/3) * 127 + 128)+","+(Math.sin(0.1*wait + 4*Math.PI/3) * 127 + 128)+")";
+          ctx.fillText("New Highscore!",w*size/2,h*size/4);
+      if(wait==255){
+          wait = 0;
+        } 
+    }
   }
   Clock();
   }
@@ -119,7 +132,7 @@ function CanvasResizer(){
     else if(Dir[1][1]==-1) xSheet=510;
     ctx.drawImage(sheetSnek,xSheet,0,160,160,(snake[0][0])*size, (snake[0][1])*size, size, size);
     bctx.fillStyle = "red";
-    for(i=0; i<Apples.length; i++) bctx.fillRect(Apples[i][0]*size,Apples[i][1]*size,size,size);
+    for(i=0; i<Apples.length; i++) bctx.drawImage(appleSprite,-10,-10,170,170,Apples[i][0]*size,Apples[i][1]*size,size,size);
     const gradient = bctx.createRadialGradient((snake[0][0]+0.5)*size, (snake[0][1]+0.5)*size, 0.15*size, (snake[0][0]+0.5)*size, (snake[0][1]+0.5)*size,1.5*size);
     gradient.addColorStop(0, "red");
     gradient.addColorStop(1, "transparent");
@@ -211,6 +224,16 @@ window.addEventListener("keydown", function (event) {
       if(fpscount.hidden==1){
         fpscount.hidden=0;
       } else fpscount.hidden=1;
+      break;
+    case "m":
+      if(musicBar.value==0){
+        turnOnMusic();
+      } else turnOffMusic();
+      break;
+    case "n":
+      if(soundBar.value==0){
+        turnOnSounds();
+      } else turnOffSounds();
       break;
     default:
       return; // Quit when this doesn't handle the key event.
